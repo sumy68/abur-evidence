@@ -66,8 +66,8 @@
   }
   .logo .accent { color: var(--accent); opacity: .9; }
   
-  /* Desktop-Navigation sichtbar & horizontal */
-  .site-nav { position: static; transform: none; }
+  /* Desktop-Navigation sichtbar & horizontal (failsafe display:block) */
+  .site-nav { position: static; transform: none; display: block; }
   .site-nav ul {
     display: flex; gap: 20px; align-items: center;
     list-style: none; margin: 0; padding: 0;
@@ -95,47 +95,56 @@
   .nav-toggle.is-open .nav-toggle-bar:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
   
   /* =========================
-     Nur Mobile: Burger + Overlay-Menü
+     Nur Mobile: Burger + Overlay-Menü (failsafe)
      ========================= */
   @media (max-width: 880px){
-    /* Header fixieren, damit nichts absackt */
-    .site-header{ position: fixed; top: 0; left: 0; right: 0; z-index: 1000; }
+    /* Header fixieren */
+    .site-header{
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    }
+  
     /* Platz für fixierten Header */
-    body{ padding-top: calc(var(--header-h) + var(--safe-top)); }
+    body{
+      padding-top: calc(var(--header-h) + var(--safe-top));
+    }
   
     /* Burger anzeigen */
-    .nav-toggle{ display: block; }
+    .nav-toggle{
+      display: block;
+      width: 40px; height: 40px; padding: 8px;
+      position: relative; z-index: 1200;
+    }
   
-    /* Overlay-Menü statt Inline-Menü */
+    /* Overlay-Nav: standardmäßig KOMPLETT versteckt */
     .site-nav{
+      display: none;                /* Failsafe: wirklich weg */
       position: fixed;
       top: calc(var(--header-h) + var(--safe-top));
       left: 0; right: 0; bottom: 0;
       background: var(--panel);
       border-bottom: 1px solid var(--line);
       max-height: calc(100svh - var(--header-h) - var(--safe-top));
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
+      overflow-y: auto; -webkit-overflow-scrolling: touch;
       padding: 16px;
       padding-bottom: calc(16px + var(--safe-bottom));
-      transform: translateY(-120%);            /* versteckt */
-      transition: transform .25s ease;
       z-index: 1100;
     }
-    .site-nav.open{ transform: translateY(0); } /* sichtbar */
+    .site-nav.open{
+      display: block;               /* Sichtbar wenn .open */
+    }
   
     /* Liste im Overlay vertikal */
     .site-nav ul{
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 14px;
+      display: flex; flex-direction: column;
+      align-items: flex-start; gap: 14px;
+      list-style: none; margin: 0; padding: 0;
     }
   
-    /* Scrolling sperren, wenn offen */
+    /* Seite nicht scrollen, wenn Menü offen */
     body.nav-open{ overflow: hidden; }
   }
   
-  /* Anker nicht unter Header verstecken */
+  /* Anker-Offset unter Header (einmalig) */
   :target{ scroll-margin-top: calc(var(--header-h) + var(--safe-top) + 12px); }
   
   /* Weniger Animation bei Bedarf */

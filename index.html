@@ -214,60 +214,50 @@
   <!-- JS -->
   <script>
     // Jahr im Footer automatisch aktualisieren
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Mobile Menü Logik (Burger)
-    const toggle = document.querySelector('.nav-toggle');
-    const nav = document.getElementById('site-nav');
-
+    document.getElementById("year").textContent = new Date().getFullYear();
+  
+    // Mobile Navigation mit Burger-Animation und korrektem Zustand
+    const toggle = document.querySelector(".nav-toggle");
+    const nav = document.getElementById("site-nav");
+  
     function openNav() {
-      toggle.classList.add('is-open');
-      toggle.setAttribute('aria-expanded', 'true');
-      nav.classList.add('open');
-      document.body.classList.add('nav-open');
-      nav.setAttribute('aria-hidden', 'false');
-      toggle.setAttribute('aria-label', 'Menü schließen');
+      toggle.classList.add("is-open");
+      toggle.setAttribute("aria-expanded", "true");
+      nav.classList.add("open");
+      document.body.classList.add("nav-open");
     }
+  
     function closeNav() {
-      toggle.classList.remove('is-open');
-      toggle.setAttribute('aria-expanded', 'false');
-      nav.classList.remove('open');
-      document.body.classList.remove('nav-open');
-      nav.setAttribute('aria-hidden', 'true');
-      toggle.setAttribute('aria-label', 'Menü öffnen');
+      toggle.classList.remove("is-open");
+      toggle.setAttribute("aria-expanded", "false");
+      nav.classList.remove("open");
+      document.body.classList.remove("nav-open");
     }
-
-    // Initial (falls JS langsam lädt)
+  
+    // Sicherstellen, dass das Menü beim Laden geschlossen ist
     closeNav();
-
-    // Toggle-Klick
-    toggle.addEventListener('click', () => {
-      const expanded = toggle.getAttribute('aria-expanded') === 'true';
+  
+    // Toggle-Button klickbar machen
+    toggle.addEventListener("click", () => {
+      const expanded = toggle.getAttribute("aria-expanded") === "true";
       expanded ? closeNav() : openNav();
     });
-
+  
     // ESC schließt Menü
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeNav();
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeNav();
     });
-
-    // Link-Klick in der Nav schließt Menü + smooth scroll
+  
+    // Klick auf Link in der Navigation schließt Menü + Scroll
     nav.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener('click', (e) => {
-        const target = document.querySelector(a.getAttribute('href'));
+      a.addEventListener("click", (e) => {
+        const target = document.querySelector(a.getAttribute("href"));
         if (!target) return;
         e.preventDefault();
         closeNav();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     });
-
-    // Optional: Schließen beim Klick außerhalb (nur wenn offen)
-    document.addEventListener('click', (e) => {
-      if (!nav.classList.contains('open')) return;
-      const withinHeader = e.target.closest('.site-header');
-      if (!withinHeader) closeNav();
-    });
-  </script>
+  </script>  
 </body>
 </html>
