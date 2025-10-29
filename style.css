@@ -12,11 +12,11 @@
     --shadow: 0 8px 24px rgba(0, 0, 0, .35);
     --radius: 18px;
   
-    /* Safe-Area für iOS (Notch/Dynamic Island) */
+    /* Safe-Area iOS */
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
   
-    /* Header-Höhe (Inhaltshöhe, ohne Safe-Area) */
+    /* Header-Inhaltshöhe */
     --header-h: 64px;
   }
   
@@ -32,7 +32,6 @@
   }
   img { max-width: 100%; height: auto; display: block; }
   
-  /* Layout */
   .container { max-width: 1100px; margin-inline: auto; padding: 0 20px; }
   .section { padding: 72px 0; }
   .section-alt { background: var(--panel); }
@@ -46,12 +45,10 @@
   @media (max-width: 720px){ .hide-sm { display: none; } }
   
   /* =========================
-     Header & Navigation (Desktop default)
+     Header & Navigation – Desktop Default
      ========================= */
   .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    position: sticky; top: 0; z-index: 1000;
     background: rgba(11,11,11,.75);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -69,7 +66,7 @@
   }
   .logo .accent { color: var(--accent); opacity: .9; }
   
-  /* Desktop: UL bleibt horizontal sichtbar */
+  /* Desktop-Navigation sichtbar & horizontal */
   .site-nav { position: static; transform: none; }
   .site-nav ul {
     display: flex; gap: 20px; align-items: center;
@@ -78,7 +75,7 @@
   .site-nav a { color: var(--text); text-decoration: none; opacity: .9; }
   .site-nav a:hover { opacity: 1; }
   
-  /* Burger-Button standardmäßig VERSTECKT (nur Mobile zeigt ihn) */
+  /* Burger-Button standardmäßig versteckt (nur Mobile zeigt ihn) */
   .nav-toggle {
     display: none;
     background: none;
@@ -98,18 +95,18 @@
   .nav-toggle.is-open .nav-toggle-bar:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
   
   /* =========================
-     NUR Mobile: Burger + Overlay-Menü
+     Nur Mobile: Burger + Overlay-Menü
      ========================= */
   @media (max-width: 880px){
-    /* Header auf Mobile fixieren, damit er nicht absackt */
+    /* Header fixieren, damit nichts absackt */
     .site-header{ position: fixed; top: 0; left: 0; right: 0; z-index: 1000; }
-    /* Platz für fixierten Header schaffen */
+    /* Platz für fixierten Header */
     body{ padding-top: calc(var(--header-h) + var(--safe-top)); }
   
-    /* Burger-Button anzeigen */
+    /* Burger anzeigen */
     .nav-toggle{ display: block; }
   
-    /* Overlay-Menü ersetzt die Desktop-UL-Darstellung */
+    /* Overlay-Menü statt Inline-Menü */
     .site-nav{
       position: fixed;
       top: calc(var(--header-h) + var(--safe-top));
@@ -117,28 +114,31 @@
       background: var(--panel);
       border-bottom: 1px solid var(--line);
       max-height: calc(100svh - var(--header-h) - var(--safe-top));
-      overflow-y: auto; -webkit-overflow-scrolling: touch;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       padding: 16px;
       padding-bottom: calc(16px + var(--safe-bottom));
-      transform: translateY(-120%);
+      transform: translateY(-120%);            /* versteckt */
       transition: transform .25s ease;
       z-index: 1100;
     }
-    .site-nav.open{ transform: translateY(0); }
+    .site-nav.open{ transform: translateY(0); } /* sichtbar */
   
+    /* Liste im Overlay vertikal */
     .site-nav ul{
       flex-direction: column;
       align-items: flex-start;
       gap: 14px;
     }
   
+    /* Scrolling sperren, wenn offen */
     body.nav-open{ overflow: hidden; }
   }
   
   /* Anker nicht unter Header verstecken */
   :target{ scroll-margin-top: calc(var(--header-h) + var(--safe-top) + 12px); }
   
-  /* Barrierefreiheit: weniger Animationen, wenn gewünscht */
+  /* Weniger Animation bei Bedarf */
   @media (prefers-reduced-motion: reduce){
     .site-nav{ transition: none; }
     .nav-toggle-bar{ transition: none; }

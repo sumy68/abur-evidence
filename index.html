@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Abur Evidence – Beweissicherungen, Gutachten, Erschütterungsmessungen</title>
   <meta name="description" content="Abur Evidence – Ihr Experte für Beweissicherungen, Gutachten und Erschütterungsmessungen. Europaweit." />
-  <link rel="preload" href="assets/portrait.jpg" as="image" />
+
+  <!-- Performance -->
+  <link rel="preload" href="assets/portrait.jpg" as="image" imagesrcset="assets/portrait.jpg">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -16,13 +18,15 @@
         <span>Abur</span><span class="accent">Evidence</span>
       </a>
 
+      <!-- Burger-Button (nur auf Mobile sichtbar via CSS) -->
       <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Menü öffnen">
         <span class="nav-toggle-bar"></span>
         <span class="nav-toggle-bar"></span>
         <span class="nav-toggle-bar"></span>
       </button>
 
-      <nav id="site-nav" class="site-nav" aria-label="Hauptnavigation">
+      <!-- Hauptnavigation -->
+      <nav id="site-nav" class="site-nav" aria-label="Hauptnavigation" aria-hidden="true" role="navigation">
         <ul>
           <li><a href="#leistungen">Leistungen</a></li>
           <li><a href="#ueber-uns">Über uns</a></li>
@@ -45,7 +49,7 @@
         </h1>
         <p class="sub">
           Beweissicherung, technische Dokumentationen und Erschütterungsmessungen
-          für Bau, Immobilien & Industrie – schnell, präzise und nachvollziehbar.
+          für Bau, Immobilien &amp; Industrie – schnell, präzise und nachvollziehbar.
         </p>
 
         <div class="cta-row">
@@ -55,7 +59,7 @@
       </div>
 
       <div class="hero-photo">
-        <img src="assets/portrait.jpg" alt="Foto von Abur Evidence" />
+        <img src="assets/portrait.jpg" alt="Portrait von Abur Evidence" loading="eager" decoding="async" />
       </div>
     </div>
   </section>
@@ -72,8 +76,8 @@
             inklusive Foto-, Video- und Messprotokollen.
           </p>
           <ul class="list">
-            <li>Vorzustands- & Nachzustandsaufnahme</li>
-            <li>Digitale Akten & Protokolle</li>
+            <li>Vorzustands- &amp; Nachzustandsaufnahme</li>
+            <li>Digitale Akten &amp; Protokolle</li>
             <li>Objektiv, nachvollziehbar, strukturiert</li>
           </ul>
         </article>
@@ -85,9 +89,9 @@
             sachlich, verständlich und praxisorientiert.
           </p>
           <ul class="list">
-            <li>Schadensanalyse & Ursachenfindung</li>
+            <li>Schadensanalyse &amp; Ursachenfindung</li>
             <li>Bewertung nach geltenden Normen</li>
-            <li>Dokumentierte Ergebnisse mit Fotos & Messwerten</li>
+            <li>Dokumentierte Ergebnisse mit Fotos &amp; Messwerten</li>
           </ul>
         </article>
 
@@ -98,9 +102,9 @@
             inklusive Grenzwertprüfung und Handlungsempfehlungen.
           </p>
           <ul class="list">
-            <li>Baustellen- & Verkehrserschütterungen</li>
-            <li>Dauer- & Ereignismessungen</li>
-            <li>Visualisierte Messreihen & Berichte</li>
+            <li>Baustellen- &amp; Verkehrserschütterungen</li>
+            <li>Dauer- &amp; Ereignismessungen</li>
+            <li>Visualisierte Messreihen &amp; Berichte</li>
           </ul>
         </article>
       </div>
@@ -207,31 +211,62 @@
     </div>
   </footer>
 
+  <!-- JS -->
   <script>
     // Jahr im Footer automatisch aktualisieren
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Mobile Menü Logik
+    // Mobile Menü Logik (Burger)
     const toggle = document.querySelector('.nav-toggle');
     const nav = document.getElementById('site-nav');
+
+    function openNav() {
+      toggle.classList.add('is-open');
+      toggle.setAttribute('aria-expanded', 'true');
+      nav.classList.add('open');
+      document.body.classList.add('nav-open');
+      nav.setAttribute('aria-hidden', 'false');
+      toggle.setAttribute('aria-label', 'Menü schließen');
+    }
+    function closeNav() {
+      toggle.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      nav.classList.remove('open');
+      document.body.classList.remove('nav-open');
+      nav.setAttribute('aria-hidden', 'true');
+      toggle.setAttribute('aria-label', 'Menü öffnen');
+    }
+
+    // Initial (falls JS langsam lädt)
+    closeNav();
+
+    // Toggle-Klick
     toggle.addEventListener('click', () => {
       const expanded = toggle.getAttribute('aria-expanded') === 'true';
-      toggle.setAttribute('aria-expanded', String(!expanded));
-      nav.classList.toggle('open');
-      document.body.classList.toggle('nav-open');
+      expanded ? closeNav() : openNav();
     });
 
-    // Smooth Scrolling
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener('click', e => {
+    // ESC schließt Menü
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeNav();
+    });
+
+    // Link-Klick in der Nav schließt Menü + smooth scroll
+    nav.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
         const target = document.querySelector(a.getAttribute('href'));
         if (!target) return;
         e.preventDefault();
+        closeNav();
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        nav.classList.remove('open');
-        toggle.setAttribute('aria-expanded', 'false');
-        document.body.classList.remove('nav-open');
       });
+    });
+
+    // Optional: Schließen beim Klick außerhalb (nur wenn offen)
+    document.addEventListener('click', (e) => {
+      if (!nav.classList.contains('open')) return;
+      const withinHeader = e.target.closest('.site-header');
+      if (!withinHeader) closeNav();
     });
   </script>
 </body>
