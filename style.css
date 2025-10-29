@@ -179,9 +179,9 @@
       right: 0;
       top: calc(64px + 1px);
       display: none;
-      background: #b49595;
+      background: #6b6969;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-      border-bottom: 1px solid #b49595;
+      border-bottom: 1px solid #6b6969;
       z-index: 99;
     }
   
@@ -212,11 +212,6 @@
       overflow: hidden;
     }
   }
-  
- 
-  
-
-
 
 
   /* Scroll-Offset unter Header */
