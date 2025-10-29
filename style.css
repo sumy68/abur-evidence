@@ -46,7 +46,7 @@
   @media (max-width: 720px){ .hide-sm { display: none; } }
   
   /* =========================
-     Header & Navigation
+     Header & Navigation (Desktop default)
      ========================= */
   .site-header {
     position: sticky;
@@ -56,13 +56,11 @@
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--line);
-  
-    /* WICHTIG: Safe-Area oben freihalten */
     padding-top: var(--safe-top);
   }
   .header-inner {
     display: flex; align-items: center; justify-content: space-between;
-    height: var(--header-h); /* 64px Inhaltshöhe */
+    height: var(--header-h);
   }
   .logo {
     display: inline-flex; gap: .4ch; align-items: center;
@@ -71,78 +69,79 @@
   }
   .logo .accent { color: var(--accent); opacity: .9; }
   
+  /* Desktop: UL bleibt horizontal sichtbar */
+  .site-nav { position: static; transform: none; }
   .site-nav ul {
     display: flex; gap: 20px; align-items: center;
     list-style: none; margin: 0; padding: 0;
   }
-  .site-nav a {
-    color: var(--text); text-decoration: none; opacity: .9;
-  }
+  .site-nav a { color: var(--text); text-decoration: none; opacity: .9; }
   .site-nav a:hover { opacity: 1; }
   
-  /* Toggle Button (Hamburger) */
+  /* Burger-Button standardmäßig VERSTECKT (nur Mobile zeigt ihn) */
   .nav-toggle {
     display: none;
     background: none;
     border: 0;
     cursor: pointer;
     padding: 8px;
+    width: 40px; height: 40px;
+    position: relative; z-index: 1200;
   }
   .nav-toggle-bar {
-    display: block;
-    width: 24px;
-    height: 2px;
-    background: var(--text);
+    width: 24px; height: 2px; background: var(--text);
     margin: 5px 0;
+    transition: transform .2s ease, opacity .2s ease;
   }
+  .nav-toggle.is-open .nav-toggle-bar:nth-child(1){ transform: translateY(7px) rotate(45deg); }
+  .nav-toggle.is-open .nav-toggle-bar:nth-child(2){ opacity: 0; }
+  .nav-toggle.is-open .nav-toggle-bar:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
   
   /* =========================
-     Mobile Navigation
+     NUR Mobile: Burger + Overlay-Menü
      ========================= */
   @media (max-width: 880px){
-    .nav-toggle{ display:block }
+    /* Header auf Mobile fixieren, damit er nicht absackt */
+    .site-header{ position: fixed; top: 0; left: 0; right: 0; z-index: 1000; }
+    /* Platz für fixierten Header schaffen */
+    body{ padding-top: calc(var(--header-h) + var(--safe-top)); }
   
-    /* Header auf Mobile FIXIEREN, damit er nicht "absackt" */
-    .site-header{
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 1000;
-    }
-    /* Platz für den fixierten Header schaffen (Headerhöhe + Safe-Area) */
-    body{
-      padding-top: calc(var(--header-h) + var(--safe-top));
-    }
+    /* Burger-Button anzeigen */
+    .nav-toggle{ display: block; }
   
+    /* Overlay-Menü ersetzt die Desktop-UL-Darstellung */
     .site-nav{
       position: fixed;
-      /* Start unterhalb des Headers + Safe-Area */
       top: calc(var(--header-h) + var(--safe-top));
       left: 0; right: 0; bottom: 0;
-  
       background: var(--panel);
       border-bottom: 1px solid var(--line);
-  
-      /* Stabil auf iOS: 100svh statt vh/dvh und Safe-Area abziehen */
       max-height: calc(100svh - var(--header-h) - var(--safe-top));
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-  
+      overflow-y: auto; -webkit-overflow-scrolling: touch;
       padding: 16px;
-      /* Home-Indicator freilassen */
       padding-bottom: calc(16px + var(--safe-bottom));
-  
       transform: translateY(-120%);
       transition: transform .25s ease;
-      z-index: 1100; /* über Header */
+      z-index: 1100;
     }
     .site-nav.open{ transform: translateY(0); }
-    .site-nav ul{ flex-direction: column; align-items: flex-start; gap: 14px; }
+  
+    .site-nav ul{
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+    }
+  
     body.nav-open{ overflow: hidden; }
   }
   
-  /* Anker-Ziele (z. B. #kontakt) nicht unter dem Header verstecken */
-  :target{
-    scroll-margin-top: calc(var(--header-h) + var(--safe-top) + 12px);
+  /* Anker nicht unter Header verstecken */
+  :target{ scroll-margin-top: calc(var(--header-h) + var(--safe-top) + 12px); }
+  
+  /* Barrierefreiheit: weniger Animationen, wenn gewünscht */
+  @media (prefers-reduced-motion: reduce){
+    .site-nav{ transition: none; }
+    .nav-toggle-bar{ transition: none; }
   }
   
   /* =========================
