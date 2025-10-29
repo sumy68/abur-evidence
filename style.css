@@ -102,6 +102,17 @@
   @media (max-width: 880px){
     .nav-toggle{ display:block }
   
+    /* Header auf Mobile FIXIEREN, damit er nicht "absackt" */
+    .site-header{
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+    }
+    /* Platz für den fixierten Header schaffen (Headerhöhe + Safe-Area) */
+    body{
+      padding-top: calc(var(--header-h) + var(--safe-top));
+    }
+  
     .site-nav{
       position: fixed;
       /* Start unterhalb des Headers + Safe-Area */
@@ -127,6 +138,11 @@
     .site-nav.open{ transform: translateY(0); }
     .site-nav ul{ flex-direction: column; align-items: flex-start; gap: 14px; }
     body.nav-open{ overflow: hidden; }
+  }
+  
+  /* Anker-Ziele (z. B. #kontakt) nicht unter dem Header verstecken */
+  :target{
+    scroll-margin-top: calc(var(--header-h) + var(--safe-top) + 12px);
   }
   
   /* =========================
