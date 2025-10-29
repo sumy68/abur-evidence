@@ -1,5 +1,7 @@
-/* Farbpalette (Monochrom) */
-:root {
+/* =========================
+   Farbpalette & Globals
+   ========================= */
+   :root {
     --bg: #0b0b0b;
     --panel: #141414;
     --panel-2: #1e1e1e;
@@ -9,6 +11,13 @@
     --accent: #ffffff;
     --shadow: 0 8px 24px rgba(0, 0, 0, .35);
     --radius: 18px;
+  
+    /* Safe-Area für iOS (Notch/Dynamic Island) */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  
+    /* Header-Höhe (Inhaltshöhe, ohne Safe-Area) */
+    --header-h: 64px;
   }
   
   /* Basis */
@@ -36,16 +45,24 @@
   .hide-sm { display: inline; }
   @media (max-width: 720px){ .hide-sm { display: none; } }
   
-  /* Header */
+  /* =========================
+     Header & Navigation
+     ========================= */
   .site-header {
-    position: sticky; top: 0; z-index: 50;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
     background: rgba(11,11,11,.75);
     backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--line);
+  
+    /* WICHTIG: Safe-Area oben freihalten */
+    padding-top: var(--safe-top);
   }
   .header-inner {
     display: flex; align-items: center; justify-content: space-between;
-    height: 64px;
+    height: var(--header-h); /* 64px Inhaltshöhe */
   }
   .logo {
     display: inline-flex; gap: .4ch; align-items: center;
@@ -63,7 +80,7 @@
   }
   .site-nav a:hover { opacity: 1; }
   
-  /* Toggle Button */
+  /* Toggle Button (Hamburger) */
   .nav-toggle {
     display: none;
     background: none;
@@ -79,33 +96,42 @@
     margin: 5px 0;
   }
   
-  /* Mobile Navigation */
+  /* =========================
+     Mobile Navigation
+     ========================= */
   @media (max-width: 880px){
-    :root { --header-h: 64px; }
-  
     .nav-toggle{ display:block }
   
     .site-nav{
       position: fixed;
-      top: var(--header-h);
+      /* Start unterhalb des Headers + Safe-Area */
+      top: calc(var(--header-h) + var(--safe-top));
       left: 0; right: 0; bottom: 0;
+  
       background: var(--panel);
       border-bottom: 1px solid var(--line);
-      max-height: calc(100dvh - var(--header-h));
+  
+      /* Stabil auf iOS: 100svh statt vh/dvh und Safe-Area abziehen */
+      max-height: calc(100svh - var(--header-h) - var(--safe-top));
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+  
       padding: 16px;
-      padding-bottom: calc(16px + env(safe-area-inset-bottom, 0));
+      /* Home-Indicator freilassen */
+      padding-bottom: calc(16px + var(--safe-bottom));
+  
       transform: translateY(-120%);
       transition: transform .25s ease;
-      z-index: 60;
+      z-index: 1100; /* über Header */
     }
     .site-nav.open{ transform: translateY(0); }
     .site-nav ul{ flex-direction: column; align-items: flex-start; gap: 14px; }
     body.nav-open{ overflow: hidden; }
   }
   
-  /* Buttons */
+  /* =========================
+     Buttons
+     ========================= */
   .btn {
     display: inline-block;
     padding: 12px 18px;
@@ -141,7 +167,9 @@
     color: #000;
   }
   
-  /* Hero */
+  /* =========================
+     Hero
+     ========================= */
   .hero {
     padding: 100px 0 72px;
     border-bottom: 1px solid var(--line);
@@ -187,7 +215,9 @@
     aspect-ratio: 4 / 5;
   }
   
-  /* Cards (Leistungen) */
+  /* =========================
+     Cards (Leistungen)
+     ========================= */
   .cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -215,7 +245,9 @@
   }
   @media (max-width: 620px){ .cards { grid-template-columns: 1fr; } }
   
-  /* Über uns */
+  /* =========================
+     Über uns
+     ========================= */
   .grid-2 {
     display: grid;
     grid-template-columns: 1.2fr .8fr;
@@ -253,7 +285,9 @@
     .facts { grid-template-columns: 1fr 1fr; }
   }
   
-  /* Referenzen */
+  /* =========================
+     Referenzen
+     ========================= */
   .quotes {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -277,7 +311,9 @@
     .quotes { grid-template-columns: 1fr; }
   }
   
-  /* Kontakt */
+  /* =========================
+     Kontakt
+     ========================= */
   .contact-grid {
     display: grid;
     grid-template-columns: 1fr .9fr;
@@ -334,7 +370,9 @@
     .contact-grid { grid-template-columns: 1fr; }
   }
   
-  /* Footer */
+  /* =========================
+     Footer
+     ========================= */
   .site-footer {
     border-top: 1px solid var(--line);
     padding: 22px 0;
@@ -359,5 +397,19 @@
   .footer-links a[aria-disabled="true"] {
     opacity: .5;
     pointer-events: none;
+  }
+  
+  /* =========================
+     Fallbacks für sehr altes iOS
+     ========================= */
+  @supports (padding-top: constant(safe-area-inset-top)) {
+    .site-header { padding-top: constant(safe-area-inset-top); }
+    @media (max-width: 880px){
+      .site-nav{
+        top: calc(var(--header-h) + constant(safe-area-inset-top));
+        padding-bottom: calc(16px + constant(safe-area-inset-bottom));
+        max-height: calc(100vh - var(--header-h) - constant(safe-area-inset-top));
+      }
+    }
   }
   
